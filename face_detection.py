@@ -20,10 +20,12 @@ def predict_face(face):
     in_encoder = Normalizer(norm="l2")
     face_embedding = np.expand_dims(face_embedding, axis=0)
     face_embedding = in_encoder.transform(face_embedding)
-    result = svc_model.predict(face_embedding)
-    print("!!!!!!!!!!!!!!", result)
+    index = svc_model.predict(face_embedding)[0]
+    possibility = svc_model.predict_proba(face_embedding)[0, index] * 100
+    possibility = round(possibility, 2)
+    print("!!!!!!!!!!!!!!", index, possibility)
 
-    return result[0]
+    return index, possibility
 
 
 def test_static_img():
@@ -40,7 +42,7 @@ def test_static_img():
             cv2.rectangle(inputImg, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
             face = inputImg[y1: y1 + height, x1:x1 + width]
-            #predict
+            # predict
             predict = predict_face(face)
 
             cv2.putText(inputImg, "face" + str(predict), (x1, y1), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, (0, 0, 255), 1)
