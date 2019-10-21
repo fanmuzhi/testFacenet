@@ -11,6 +11,13 @@ detector = MTCNN()
 keras_model = keras.models.load_model("./model/facenet_keras.h5")
 svc_model = pickle.load(open("./data/syna_svc.model", "rb"))
 
+G_CLASSNAMES = ["JunJie", "Jerry", "Qiling", "Tom"]
+G_THRESHOLD = 65
+
+G_GREEN = (0, 255, 0)
+G_RED = (255, 0, 0)
+G_YELLOW = (255, 255, 0)
+G_BLUE = (0, 0, 255)
 
 def predict_face(face):
     face = cv2.resize(face, (160, 160), interpolation=cv2.INTER_AREA)
@@ -29,8 +36,14 @@ def predict_face(face):
 
 
 def test_static_img():
-    #inputImg = cv2.imread("./test_image/lfw/George_W_Bush/George_W_Bush_0003.jpg")
-    inputImg = cv2.imread(r"E:/deeplearning/test_image/tom2.jpg")
+    inputImg = cv2.imread("./test_image/syna/test/person1.jpg")
+    #inputImg = cv2.imread(r"E:/deeplearning/test_image/tom2.jpg")
+
+    #x,y,z = inputImg.shape
+    #x_scaled = (int)(x / 10)
+    #y_scaled = (int)(y / 10)
+    #inputImg = cv2.resize(inputImg, (y_scaled, x_scaled), interpolation=cv2.INTER_AREA)
+
     inputImg = cv2.cvtColor(inputImg, cv2.COLOR_RGB2BGR)
     faces = detector.detect_faces(inputImg)
 
@@ -49,7 +62,8 @@ def test_static_img():
 
     inputImg = cv2.cvtColor(inputImg, cv2.COLOR_RGB2BGR)
 
-    cv2.imshow("camera", inputImg)
+    #cv2.imshow("camera", inputImg)
+    cv2.imwrite("./test_image/syna/test/person1_generated.jpg", inputImg)
     key = cv2.waitKey(0)
     cv2.destroyAllWindows()
 
@@ -79,11 +93,16 @@ def test_live_cam():
                 y1 = abs(y1)
                 x2 = x1 + width
                 y2 = y1 + height
-                cv2.rectangle(inputImg, (x1, y1), (x2, y2), (0, 255, 0), 2)
                 face = inputImg[y1: y1 + height, x1:x1 + width]
                 # predict
-                predict = predict_face(face)
-                cv2.putText(inputImg, "face" + str(predict), (x1, y1), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, (0, 0, 255), 1)
+                index, possibility = predict_face(face)
+
+                if possibility > G_THRESHOLD:
+                    cv2.rectangle(inputImg, (x1, y1), (x2, y2), G_GREEN, 2)
+                    cv2.putText(inputImg, G_CLASSNAMES[index] + " (" + str(possibility) + ")",
+                                (x1, y1), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, G_YELLOW, 1)
+                else:
+                    cv2.rectangle(inputImg, (x1, y1), (x2, y2), G_RED, 2)
 
         inputImg = cv2.cvtColor(inputImg, cv2.COLOR_RGB2BGR)
         cv2.imshow("camera", inputImg)
