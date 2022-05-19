@@ -1,4 +1,5 @@
 import math
+import os
 import numpy as np
 from mtcnn.mtcnn import MTCNN
 import tensorflow.keras as keras
@@ -8,12 +9,14 @@ from sklearn.preprocessing import Normalizer
 from prepare_training_embeddings_data import get_embedding
 
 detector = MTCNN()
-keras_model = keras.models.load_model("./model/facenet_keras.h5")
-svc_model = pickle.load(open("./data/syna_svc.model", "rb"))
 
-G_CLASSNAMES = ["JunJie", "Jerry", "Qiling", "Tom"]
+
+G_CLASSNAMES = ["HanXu", "Henry", "TaiLin"]
 G_THRESHOLD = 65
-
+keras_model = keras.models.load_model(
+    r"C:\PythonProjects\testFacenet\model\facenet_keras.h5")
+svc_model = pickle.load(
+    open(r"C:\PythonProjects\testFacenet\data\syna_svc.model", "rb"))
 G_GREEN = (0, 255, 0)
 G_RED = (255, 0, 0)
 G_YELLOW = (255, 255, 0)

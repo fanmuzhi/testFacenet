@@ -5,7 +5,6 @@ import numpy as np
 
 detector = MTCNN()
 
-
 def training_extract_face(filename, required_size=(160, 160)):
     image = cv2.imread(filename)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -15,12 +14,12 @@ def training_extract_face(filename, required_size=(160, 160)):
     if len(results) >= 1:
         # we expected the training image only contains 1 face
         x1, y1, width, height = results[0]['box']
-        face = image[y1: y1+height, x1:x1+width]
+        face = image[y1: y1 + height, x1:x1 + width]
         face = cv2.resize(face, required_size, interpolation=cv2.INTER_AREA)
         face = np.asarray(face)
 
         #cv2.imshow("test", face)
-        #cv2.waitKey(0)
+        # cv2.waitKey(0)
 
         #print("found face", filename)
     else:
@@ -68,4 +67,3 @@ if __name__ == "__main__":
     print("label:", y_train)
 
     np.savez_compressed("data/syna.npz", X_train, y_train, X_val, y_val)
-

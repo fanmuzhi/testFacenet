@@ -14,7 +14,13 @@ def get_embedding(model, face):
 
 if __name__ == "__main__":
 
-    model = keras.models.load_model("./model/facenet_keras.h5")
+    # example of loading the keras facenet model
+
+    # load the model
+    model = keras.models.load_model('facenet_keras.h5')
+    # summarize input and output shape
+    print(model.inputs)
+    print(model.outputs)
     print(model.summary())
 
     data = np.load("./data/syna.npz")

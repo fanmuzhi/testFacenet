@@ -6,9 +6,9 @@ from sklearn.svm import SVC
 import pickle
 
 
-data = np.load("data/syna_embeddings.npz")
+data = np.load(r"./data/syna_embeddings.npz")
 X_train, y_train, X_val, y_val = data["arr_0"], data["arr_1"], data["arr_2"], data["arr_3"]
-
+print('Dataset: train=%d, test=%d'  %  (X_train.shape[0],  y_train.shape[0]))
 #norm X
 in_encoder = Normalizer(norm="l2")
 X_train = in_encoder.transform(X_train)
